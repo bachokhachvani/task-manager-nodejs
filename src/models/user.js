@@ -4,53 +4,58 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Task = require("./task");
 
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  email: {
-    type: String,
-    unique: true,
-    required: true,
-    validate(value) {
-      if (!validator.isEmail(value)) {
-        throw new Error("email is invalid!");
-      }
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      trim: true,
     },
-    trim: true,
-    lowercase: true,
-  },
-  age: {
-    type: Number,
-    validate(value) {
-      if (value < 0) {
-        throw new Error("age cant be negative mate!");
-      }
+    email: {
+      type: String,
+      unique: true,
+      required: true,
+      validate(value) {
+        if (!validator.isEmail(value)) {
+          throw new Error("email is invalid!");
+        }
+      },
+      trim: true,
+      lowercase: true,
     },
-    default: 0,
-  },
-  password: {
-    type: String,
-    required: true,
-    trim: true,
-    minLength: 6,
-    validate(value) {
-      if (value === "password") {
-        throw new Error("password cant be password");
-      }
+    age: {
+      type: Number,
+      validate(value) {
+        if (value < 0) {
+          throw new Error("age cant be negative mate!");
+        }
+      },
+      default: 0,
     },
-  },
-  tokens: [
-    {
-      token: {
-        type: String,
-        required: true,
+    password: {
+      type: String,
+      required: true,
+      trim: true,
+      minLength: 6,
+      validate(value) {
+        if (value === "password") {
+          throw new Error("password cant be password");
+        }
       },
     },
-  ],
-});
+    tokens: [
+      {
+        token: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
+  },
+  {
+    timestamps: true,
+  }
+);
 
 userSchema.virtual("Usertasks", {
   ref: "Task",

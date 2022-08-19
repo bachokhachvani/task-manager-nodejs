@@ -17,12 +17,33 @@ router.post("/tasks", auth, async (req, res) => {
   }
 });
 
+//GET/tasks?completed=true
+//GET/tasks?limit=10&skip=10
+//GET/tasks?sortBy=createdAt_desc
 router.get("/tasks", auth, async (req, res) => {
+  const match = {};
+  const sort = {};
+  if (req.query.sortBy) {
+    const parts = req.query.sortBy.split(":");
+    sort[parts[0]] = parts[1] === "asc" ? 1 : -1;
+  }
+  if (req.query.completed) {
+    match.completed = req.query.completed === "true";
+  }
   try {
-    const task = await Task.find({ owner: req.user._id });
-    res.status(200).send(task);
+    // const task = await Task.find({ owner: req.user._id });
+    await req.user.populate({
+      path: "Usertasks",
+      match,
+      options: {
+        limit: parseInt(req.query.limit),
+        skip: parseInt(req.query.skip),
+        sort,
+      },
+    });
+    res.status(200).send(req.user.Usertasks);
   } catch (e) {
-    res.status(500).res.send();
+    res.status(500).send();
   }
 });
 
