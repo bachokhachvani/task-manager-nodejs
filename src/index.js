@@ -6,9 +6,10 @@ const { translateAliases } = require("./models/user");
 const userRouter = require("./routers/user");
 const taskRouter = require("../src/routers/task");
 const { ObjectId } = require("mongodb");
+require("dotenv").config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
 const multer = require("multer");
 const upload = new multer({
