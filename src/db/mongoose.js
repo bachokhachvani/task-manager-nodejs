@@ -1,4 +1,12 @@
 const mongoose = require("mongoose");
-require("dotenv").config();
+const path = require("path");
+require("dotenv").config({
+  path: path
+    .resolve(__dirname, `../../config/${process.env.ENVIRONMENT}.env`)
+    .replace(/\\/gm, "/"),
+});
 
-mongoose.connect(process.env.MONGODB_URL, {});
+const MONGODB_URL = process.env.MONGODB_URL;
+
+// console.log("MONGOURL", MONGODB_URL);
+mongoose.connect(MONGODB_URL, {});
